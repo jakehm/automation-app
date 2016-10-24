@@ -5,6 +5,7 @@ const internalIp = require('internal-ip');
 const express = require('express');
 const webpack = require('webpack');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = express();
 const compiler = webpack(config);
@@ -18,10 +19,20 @@ const middleware = webpackDevMiddleware(compiler, {
 
 app.use(middleware);
 app.use(webpackHotMiddleware(compiler));
+//new code
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './src/www/index.html'));
 });
+
+//added code to handle instructions post
+app.post('/tasks', (req, res) => {
+  console.log(req.body)
+  console.log(req.body.tasks)
+  console.log(res)
+}) 
 
 const port = 8080;
 const ip = internalIp.v4();

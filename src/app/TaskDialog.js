@@ -6,60 +6,76 @@ import Input from 'react-toolbox/lib/input'
 
 export default class TaskDialog extends React.Component {
 
-	state = {
-		dropDownValue: 'goToUrl',
-		urlValue: ''
-	}
+  state = {
+    action: 'goToUrl',
+    target: ''
+  }
 
-	handleDropDownChange = (value) => {
-		this.setState({dropDownValue: value})
-	}
+  handleDropDownChange = (value) => {
+    this.setState({action: value})
+  }
 
-	handleUrlChange = (value) => {
-		this.setState({urlValue: value})
-	}
+  handleTargetChange = (value) => {
+    this.setState({target: value})
+  }
 
-	handleSave = () => {
-		let task = {
-			action: this.state.dropDownValue,
-			target: this.state.urlValue
-		}
-		this.props.onAdd(task)
-	}
+  handleTextInputChange = (value) => {
+    this.setState({textInput: value})
+  }
 
-	actions = [
-		{ label: "Cancel", onClick: this.props.onToggle },
-		{ label: "Save", onClick: this.handleSave }
-	]
+  handleSave = () => {
+    let task = {
+      action: this.state.action,
+      target: this.state.target
+    }
+    if (this.state.action==='doText')
+      task.textInput = this.state.textInput
 
-	dropDownSource = [
-		{value: 'goToUrl', label: 'Go to url'},
-		{value: 'doClick', label: 'Click something'},
-		{value: 'doText', label: 'Enter text'}
-	]
+    this.props.onAdd(task)
+  }
 
-	render() {
-		return (
-			<Dialog
-				actions={this.actions}
-				active={this.props.active}
-				onEscKeyDown={this.props.onToggle}
-				onOverlayClick={this.props.onToggle}
-				title='Edit Task' 
-				type='large'>
-				<p>placeholder for task editing form</p>
-				<Dropdown
-					auto
-					source = {this.dropDownSource}
-					value = {this.state.dropDownValue}
-					onChange = {this.handleDropDownChange}
-				/>
-				{this.state.dropDownValue === 'goToUrl' &&
-					<Input type='text' label='URL' value={this.state.urlValue}
-						onChange={this.handleUrlChange} 
-					/>
-				}
-			</Dialog>
-		)
-	}
+  actions = [
+    { label: "Cancel", onClick: this.props.onToggle },
+    { label: "Save", onClick: this.handleSave }
+  ]
+
+  dropDownSource = [
+    {value: 'goToUrl', label: 'Go to url'},
+    {value: 'doClick', label: 'Click something'},
+    {value: 'doText', label: 'Enter text'}
+  ]
+
+  render() {
+    return (
+      <Dialog
+        actions={this.actions}
+        active={this.props.active}
+        onEscKeyDown={this.props.onToggle}
+        onOverlayClick={this.props.onToggle}
+        title='Edit Task' 
+        type='large'>
+        <p>placeholder for task editing form</p>
+        <Dropdown
+          auto
+          source = {this.dropDownSource}
+          value = {this.state.action}
+          onChange = {this.handleDropDownChange}
+        />
+        {this.state.action === 'goToUrl' ? (
+          <Input type='text' label='url' value={this.state.target}
+            onChange={this.handleTargetChange} 
+          />
+        ) : (
+          <Input type='text' label='xpath' value={this.state.target}
+            onChange={this.handleTargetChange} 
+          />
+        )}
+        {this.state.action === 'doText' &&
+          <Input type='text' label='text' value={this.state.textInput}
+            onChange={this.handleTextInputChange}
+          />
+        }
+      </Dialog>
+    )
+  }
 }
