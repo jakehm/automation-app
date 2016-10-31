@@ -8,7 +8,8 @@ export default class TaskDialog extends React.Component {
 
   state = {
     action: 'goToUrl',
-    target: ''
+    target: '',
+    text: ''
   }
 
   handleDropDownChange = (value) => {
@@ -19,8 +20,8 @@ export default class TaskDialog extends React.Component {
     this.setState({target: value})
   }
 
-  handleTextInputChange = (value) => {
-    this.setState({textInput: value})
+  handleTextChange = (value) => {
+    this.setState({text: value})
   }
 
   handleSave = () => {
@@ -29,7 +30,7 @@ export default class TaskDialog extends React.Component {
       target: this.state.target
     }
     if (this.state.action==='doText')
-      task.textInput = this.state.textInput
+      task.text = this.state.text
 
     this.props.onAdd(task)
   }
@@ -54,7 +55,7 @@ export default class TaskDialog extends React.Component {
         onOverlayClick={this.props.onToggle}
         title='Edit Task' 
         type='large'>
-        <p>placeholder for task editing form</p>
+        <p>Create an automation task.</p>
         <Dropdown
           auto
           source = {this.dropDownSource}
@@ -66,13 +67,13 @@ export default class TaskDialog extends React.Component {
             onChange={this.handleTargetChange} 
           />
         ) : (
-          <Input type='text' label='xpath' value={this.state.target}
+          <Input type='text' label='selector' value={this.state.target}
             onChange={this.handleTargetChange} 
           />
         )}
         {this.state.action === 'doText' &&
-          <Input type='text' label='text' value={this.state.textInput}
-            onChange={this.handleTextInputChange}
+          <Input type='text' label='text' value={this.state.text}
+            onChange={this.handleTextChange}
           />
         }
       </Dialog>

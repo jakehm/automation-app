@@ -6,6 +6,9 @@ const express = require('express');
 const webpack = require('webpack');
 const path = require('path');
 const bodyParser = require('body-parser');
+const Horseman = require('node-horseman')
+
+const taskRunner = require('./taskRunner.js')
 
 const app = express();
 const compiler = webpack(config);
@@ -23,15 +26,23 @@ app.use(webpackHotMiddleware(compiler));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get('/test.png', (req, res) => {
+  res.sendFile(path.join(__dirname, './test.png'))
+})
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './src/www/index.html'));
 });
 
 //added code to handle instructions post
 app.post('/tasks', (req, res) => {
-  console.log(req.body)
-  console.log(req.body.tasks)
-  console.log(res)
+  let tasks = req.body.tasks
+  let horseman = new Horseman({ignoreSSLErrors: true})
+  taskRunner(tasks, horseman)
+  .then(() => {
+    console.log('tasks complete')
+    res.send('task complete')
+  })
 }) 
 
 const port = 8080;

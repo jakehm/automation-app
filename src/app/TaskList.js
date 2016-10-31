@@ -9,7 +9,7 @@ const TaskList = (props) => (
       props.tasks.map((task, index) => { 
         let taskCaption = task.action+': '+task.target;
         if (task.action === 'doText')
-          taskCaption += ': '+task.textInput
+          taskCaption += ': '+task.text
 
         return (
           <Task {...props}
