@@ -10,7 +10,7 @@ const Task = (props) => (
 			/>
 			<MenuDivider />
 			<MenuItem value='delete' icon='delete' caption='Delete'
-				onClick={(e) => props.delete(props.index)}
+		          onClick={(e) => props.delete(props.index)}
 			/>
 		</IconMenu>
 	</ListItem>

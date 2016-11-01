@@ -26,9 +26,7 @@ app.use(webpackHotMiddleware(compiler));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/test.png', (req, res) => {
-  res.sendFile(path.join(__dirname, './test.png'))
-})
+app.use(express.static(__dirname + '/screenshots'));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, './src/www/index.html'));
@@ -37,8 +35,9 @@ app.get('*', (req, res) => {
 //added code to handle instructions post
 app.post('/tasks', (req, res) => {
   let tasks = req.body.tasks
+  let photoId = req.body.photoId
   let horseman = new Horseman({ignoreSSLErrors: true})
-  taskRunner(tasks, horseman)
+  taskRunner(tasks, photoId, horseman)
   .then(() => {
     console.log('tasks complete')
     res.send('task complete')

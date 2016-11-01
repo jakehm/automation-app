@@ -1,4 +1,4 @@
-const taskRunner = (tasks, horseman) => {
+const taskRunner = (tasks, id, horseman) => {
 
   const testData = [
     {action: 'goToUrl', target: 'http://www.bing.com'},
@@ -33,7 +33,7 @@ const taskRunner = (tasks, horseman) => {
   horseman
     .userAgent('Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0')
     .then(() => executeTasks(tasks))
-    .screenshot('test.png')
+    .screenshot('screenshots/tasks' + id + '.png')
     .close()
     .catch(console.log.bind(console))
   )

@@ -14,10 +14,11 @@ export default class App extends React.Component {
 
   state = {
     tasks: [
-      {action: 'goToUrl', target: 'https://www.bing.com/'},
-      {action: 'doText', target: '#sb_form_q', text: 'test search'},
-      {action: 'doClick', target: '#sb_form_go'}      
+      {label: 'Go to url', action: 'goToUrl', target: 'https://www.bing.com/'},
+      {label: 'Enter text', action: 'doText', target: '#sb_form_q', text: 'test search'},
+      {label: 'Click', action: 'doClick', target: '#sb_form_go'}      
     ],
+    activeIndex: 0,
     isDialogActive: false,
     isRunDialogActive: false,
     isEditDialogActive: false,
@@ -31,19 +32,28 @@ export default class App extends React.Component {
     })
   } 
 
+  handleEdit = (i) => {
+    this.setState({
+      isEditDialogActive: !this.state.isEditDialogActive,
+      activeIndex: i
+    })
+  }
+
+  handleSaveEdit = (newTask, i) => {
+    const tasks = this.state.tasks
+    tasks[i] = newTask
+    this.setState({
+      isEditDialogActive: !this.state.isEditDialogActive,
+      tasks: tasks
+    })
+  }
+
   handleDelete = (i) => {
     this.setState({
       tasks: [
         ...this.state.tasks.slice(0, i),
         ...this.state.tasks.slice(i+1)
       ]
-    })
-  }
-
-  handleEdit = (i) => {
-    this.setState({
-      isEditDialogActive: !this.state.isEditDialogActive
-
     })
   }
 
@@ -65,12 +75,15 @@ export default class App extends React.Component {
 
 
   handleSubmit = () => {
+    let photoId = Math.floor(Math.random() * 1000)
     this.setState({
       isRunning: true,
-      isRunDialogActive:true
+      isRunDialogActive:true,
+      photoId: photoId 
     })
     axios.post('/tasks', {
-      tasks: this.state.tasks
+      tasks: this.state.tasks,
+      photoId: photoId
     })
     .then((response) => {
       this.setState({
@@ -110,20 +123,19 @@ export default class App extends React.Component {
           onAdd={this.handleAdd}
           onToggle={this.handleToggle}
           active={this.state.isDialogActive}
-          index={this.state.activeIndex}
-          tasks={this.state.tasks}
         />
         <RunDialog
           onToggle={this.handleRunToggle}
           active={this.state.isRunDialogActive}
           isRunning={this.state.isRunning}
+          id={this.state.photoId}
         />
         <EditDialog
           active={this.state.isEditDialogActive}
           tasks={this.state.tasks}
           index={this.state.activeIndex}
           onToggle={this.handleEditToggle}
-          onSave{this.handleSaveEdit}
+          onSave={this.handleSaveEdit}
         />
 
 

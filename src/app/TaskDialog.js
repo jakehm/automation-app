@@ -29,6 +29,17 @@ export default class TaskDialog extends React.Component {
       action: this.state.action,
       target: this.state.target
     }
+    switch (this.state.action) {
+      case 'goToUrl':
+        task.label = 'Go to url'
+        break
+      case 'doClick':
+        task.label = 'Click'
+        break
+      case 'doText':
+        task.label = 'Enter text'
+        break
+    }
     if (this.state.action==='doText')
       task.text = this.state.text
 

@@ -7,7 +7,7 @@ const TaskList = (props) => (
     <ListSubHeader caption='Tasks' />
     {
       props.tasks.map((task, index) => { 
-        let taskCaption = task.action+': '+task.target;
+        let taskCaption = task.label+': '+task.target;
         if (task.action === 'doText')
           taskCaption += ': '+task.text
 
