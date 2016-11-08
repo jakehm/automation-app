@@ -22,7 +22,8 @@ export default class App extends React.Component {
     isDialogActive: false,
     isRunDialogActive: false,
     isEditDialogActive: false,
-    isRunning: false
+    isRunning: false,
+    isScheduleDialogActive: false
   }
 
   handleAdd = (task) => {
@@ -73,6 +74,11 @@ export default class App extends React.Component {
     });
   }
 
+  handleScheduleToggle = () => {
+    this.setState({
+      isScheduleDialogActive: !this.state.isScheduleDialogActive
+    })
+  }
 
   handleSubmit = () => {
     let photoId = Math.floor(Math.random() * 1000)
@@ -112,7 +118,7 @@ export default class App extends React.Component {
             tasks={this.state.tasks} 
             edit={this.handleEdit}
             delete={this.handleDelete} />
-          <Button label='go' primary raised
+          <Button label='test' primary raised
             onClick={this.handleSubmit}
           />
           <Button icon='add' style={fabStyle} floating accent 
