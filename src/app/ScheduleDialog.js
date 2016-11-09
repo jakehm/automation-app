@@ -29,8 +29,8 @@ const ScheduleDialog = (props) => {
        
       <TimePicker
         label='Time'
-        onChange={this.onTimeChange}
-        value={props.time}
+        onChange={props.onDateChange}
+        value={props.date}
       />
 
       <DatePicker
@@ -48,21 +48,23 @@ const ScheduleDialog = (props) => {
         value={props.repeatValue}
       />
 
-    { props.repeatValue !== 'none' &&
+    {
+      props.repeatValue !== 'none' &&
       <div>
         <span>Every </span>
         <span>
-        <input
-          type='number'
-          value={props.repeatNumber}
-          onChange={props.onRepeatNumberChange}
-          maxLength=2
-          min='1'
-          max='31'
-        />
+          <input
+            type='number'
+            value={props.repeatNumber}
+            onChange={props.onRepeatNumberChange}
+            maxLength=2
+            min='1'
+            max='31'
+          />
         </span>
         <span> {props.repeatValue}</span>
-        { props.repeatNumber > 1 &&
+        { 
+          props.repeatNumber > 1 &&
           <span>s</span>
         }
       </div>

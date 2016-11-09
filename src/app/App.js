@@ -6,7 +6,7 @@ import TaskList from './TaskList.js'
 import TaskDialog from './TaskDialog.js'
 import RunDialog from './RunDialog.js'
 import EditDialog from './EditDialog.js'
-
+import ScheduleDialog from './ScheduleDialog.js'
 
 import { Button } from 'react-toolbox/lib/button'; // Bundled component import
 
@@ -23,7 +23,8 @@ export default class App extends React.Component {
     isRunDialogActive: false,
     isEditDialogActive: false,
     isRunning: false,
-    isScheduleDialogActive: false
+    isScheduleDialogActive: false,
+    date: new Date()
   }
 
   handleAdd = (task) => {
@@ -101,6 +102,10 @@ export default class App extends React.Component {
     })
   }
 
+  handleDateChange = (date) => {
+    this.setState({date: date})
+  }
+
   render() {
     const fabStyle = {
       margin: 0,
@@ -143,7 +148,12 @@ export default class App extends React.Component {
           onToggle={this.handleEditToggle}
           onSave={this.handleSaveEdit}
         />
-
+        <ScheduleDialog
+          active={this.state.isScheduleDialogActive}
+          onToggle={this.handleScheduleToggle}
+          date={this.state.date}
+          onDateChange={this.handleDateChange}
+        />
 
       </div>
     )

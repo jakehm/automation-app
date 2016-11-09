@@ -5,7 +5,7 @@ import ProgressBar from 'react-toolbox/lib/progress_bar';
 
 const RunDialog = (props) => {
 
-  const imgPath = '/tasks'+props.id+'.png'
+  const imgPath = 'tasks'+props.id+'.png'
 
   return (
   <Dialog

@@ -3,5 +3,6 @@ npm-debug.log
 build
 screenshots/*
 .*.sw
+phantomjs-2.1.1-linux-x86_64
 
 !screenshots/.gitkeep

@@ -36,7 +36,9 @@ app.get('*', (req, res) => {
 app.post('/tasks', (req, res) => {
   let tasks = req.body.tasks
   let photoId = req.body.photoId
-  let horseman = new Horseman({ignoreSSLErrors: true})
+  let horseman = new Horseman({
+    ignoreSSLErrors: true
+  })
   taskRunner(tasks, photoId, horseman)
   .then(() => {
     console.log('tasks complete')
