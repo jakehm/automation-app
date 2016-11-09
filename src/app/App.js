@@ -9,6 +9,7 @@ import EditDialog from './EditDialog.js'
 import ScheduleDialog from './ScheduleDialog.js'
 
 import { Button } from 'react-toolbox/lib/button'; // Bundled component import
+import { Snackbar } from 'react-toolbox'
 
 export default class App extends React.Component {
 
@@ -24,7 +25,10 @@ export default class App extends React.Component {
     isEditDialogActive: false,
     isRunning: false,
     isScheduleDialogActive: false,
-    date: new Date()
+    date: new Date(),
+    repeatValue: 'none',
+    repeatNumber: 1,
+    isSnackbarActive: false
   }
 
   handleAdd = (task) => {
@@ -106,6 +110,36 @@ export default class App extends React.Component {
     this.setState({date: date})
   }
 
+  handleRepeatChange = (value) => {
+    this.setState({repeatValue: value})
+  }
+
+  handleRepeatNumberChange = (value) => {
+    this.setState({repeatNumber: value})
+  }
+
+  handleScheduleSubmit = () => {
+    this.handleScheduleToggle()
+    this.handleSnackbarToggle()    
+    let photoId = Math.floor(Math.random() * 10000)
+    axios.post('/scheduleTask', {
+      tasks: this.state.tasks,
+      photoId: photoId,
+      date: this.state.date,
+      repeatValue: this.state.repeatValue,
+      repeatNumber: this.state.repeatNumber
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
+  handleSnackbarToggle = () => {
+    this.setState({
+      isSnackbarActive: !this.state.isSnackbarActive
+    })
+  }
+
   render() {
     const fabStyle = {
       margin: 0,
@@ -126,9 +160,23 @@ export default class App extends React.Component {
           <Button label='test' primary raised
             onClick={this.handleSubmit}
           />
+          &nbsp;&nbsp;&nbsp;
+          <Button label='Schedule Task' primary raised
+            onClick={this.handleScheduleToggle}
+          />
           <Button icon='add' style={fabStyle} floating accent 
             onClick={this.handleToggle}
           />
+        <Snackbar
+          action='Dismiss'
+          active={this.state.isSnackbarActive}
+          icon='event'
+          label='Task schedule set'
+          timeout={2000}
+          onClick={this.handleSnackbarToggle}
+          onTimeout={this.handleSnackbarToggle}
+          type='accept'
+        />
         </section>
         <TaskDialog
           onAdd={this.handleAdd}
@@ -151,12 +199,15 @@ export default class App extends React.Component {
         <ScheduleDialog
           active={this.state.isScheduleDialogActive}
           onToggle={this.handleScheduleToggle}
+          onSubmit={this.handleScheduleSubmit}
           date={this.state.date}
           onDateChange={this.handleDateChange}
+          repeatValue={this.state.repeatValue}
+          onRepeatChange={this.handleRepeatChange}
+          repeatNumber={this.state.repeatNumber}
+          onRepeatNumberChange={this.handleRepeatNumberChange}
         />
-
       </div>
     )
   }
-
 }

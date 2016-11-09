@@ -5,6 +5,8 @@ import TimePicker from 'react-toolbox/lib/time_picker';
 import DatePicker from 'react-toolbox/lib/date_picker';
 import Input from 'react-toolbox/lib/input';
 
+import inputTheme from './Input.scss';
+
 const ScheduleDialog = (props) => {
 
   const actions = [
@@ -14,11 +16,15 @@ const ScheduleDialog = (props) => {
 
   const repeat = [
     {value: 'none', label: 'None'},
-    {value: 'dai', label: 'Daily'},
+    {value: 'day', label: 'Daily'},
     {value: 'week', label: 'Weekly'},
     {value: 'month', label: 'Monthly'},
     {value: 'year', label: 'Yearly'},
   ]
+
+  const handleFocus = (e) => {
+    e.target.select()
+  }
 
   return (
     <Dialog
@@ -51,15 +57,15 @@ const ScheduleDialog = (props) => {
     {
       props.repeatValue !== 'none' &&
       <div>
-        <span>Every </span>
-        <span>
-          <input
+        <span>Every &nbsp; &nbsp; &nbsp;</span>
+        <span style={{display: 'inline-block'}}>
+          <Input
+            theme={inputTheme}
             type='number'
             value={props.repeatNumber}
             onChange={props.onRepeatNumberChange}
-            maxLength=2
             min='1'
-            max='31'
+            onFocus={handleFocus}
           />
         </span>
         <span> {props.repeatValue}</span>

@@ -46,6 +46,15 @@ app.post('/tasks', (req, res) => {
   })
 }) 
 
+app.post('/scheduleTask', (req,res) => {
+  let tasks = req.body.tasks
+  let photoId = req.body.photoId
+  let date = req.body.date
+  let repeatValue = req.body.repeatValue
+  let repeatNumber = req.body.repeatNumber  
+  console.log('tasks: ' + tasks + ' / photoId: '+photoId+' / date: '+date+' / repeatValue: '+repeatValue+' / repeatNumber: '+repeatNumber)
+})
+
 const port = 8080;
 const ip = internalIp.v4();
 
