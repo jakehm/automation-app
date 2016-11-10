@@ -172,7 +172,7 @@ export default class App extends React.Component {
           active={this.state.isSnackbarActive}
           icon='event'
           label='Task schedule set'
-          timeout={2000}
+          timeout={3000}
           onClick={this.handleSnackbarToggle}
           onTimeout={this.handleSnackbarToggle}
           type='accept'

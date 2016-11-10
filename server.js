@@ -9,6 +9,8 @@ const bodyParser = require('body-parser');
 const Horseman = require('node-horseman')
 
 const taskRunner = require('./taskRunner.js')
+//const CronJob = require('cron').CronJob
+const program  = require('commander')
 
 const app = express();
 const compiler = webpack(config);
@@ -49,10 +51,34 @@ app.post('/tasks', (req, res) => {
 app.post('/scheduleTask', (req,res) => {
   let tasks = req.body.tasks
   let photoId = req.body.photoId
-  let date = req.body.date
+  let date = new Date(req.body.date)
   let repeatValue = req.body.repeatValue
   let repeatNumber = req.body.repeatNumber  
+  
+
+  date = new Date(date)
   console.log('tasks: ' + tasks + ' / photoId: '+photoId+' / date: '+date+' / repeatValue: '+repeatValue+' / repeatNumber: '+repeatNumber)
+  
+
+  let minutes = date.getMinutes()
+  let hours = date.getHours()
+  let day = date.getDate()
+  let month =  date.getMonth() + 1
+
+  let cronPattern = [minutes, hours, day, month].join(' ')
+try{
+  new CronJob(cronPattern, function() {
+    let horseman = new Horseman({
+      ignoreSSLErrors: true
+    })
+    taskRunner(tasks, photoId, horseman)
+    .then(() => {
+       console.log('tasks complete')
+    })
+  }, null, true)
+} catch (ex) {
+  console.log("cron pattern not valid")
+}
 })
 
 const port = 8080;
