@@ -1,1 +1,0 @@
-{"taskList":[{"label":"Go to url","action":"goToUrl","target":"https://www.bing.com/"},{"label":"Enter text","action":"doText","target":"#sb_form_q","text":"test search"},{"label":"Click","action":"doClick","target":"#sb_form_go"}]}
