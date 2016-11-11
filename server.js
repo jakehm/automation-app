@@ -7,10 +7,10 @@ const webpack = require('webpack');
 const path = require('path');
 const bodyParser = require('body-parser');
 const Horseman = require('node-horseman')
+const fs = require('fs')
+const spawn = require('child_process').spawn
 
 const taskRunner = require('./taskRunner.js')
-//const CronJob = require('cron').CronJob
-const program  = require('commander')
 
 const app = express();
 const compiler = webpack(config);
@@ -36,49 +36,64 @@ app.get('*', (req, res) => {
 
 //added code to handle instructions post
 app.post('/tasks', (req, res) => {
-  let tasks = req.body.tasks
-  let photoId = req.body.photoId
-  let horseman = new Horseman({
+  const tasks = req.body.tasks
+  const photoId = req.body.photoId
+  const horseman = new Horseman({
     ignoreSSLErrors: true
   })
   taskRunner(tasks, photoId, horseman)
   .then(() => {
     console.log('tasks complete')
     res.send('task complete')
-  })
+  }) 
 }) 
 
+//right now no repeat is actually a yearly repeat
+// also repeatNumber (every other week, etc) doesn't do anything
 app.post('/scheduleTask', (req,res) => {
-  let tasks = req.body.tasks
-  let photoId = req.body.photoId
-  let date = new Date(req.body.date)
-  let repeatValue = req.body.repeatValue
-  let repeatNumber = req.body.repeatNumber  
-  
-
-  date = new Date(date)
-  console.log('tasks: ' + tasks + ' / photoId: '+photoId+' / date: '+date+' / repeatValue: '+repeatValue+' / repeatNumber: '+repeatNumber)
-  
+  const tasks = { taskList: req.body.tasks }
+  const taskId = req.body.photoId
+  const date = new Date(req.body.date)
+  const repeatValue = req.body.repeatValue
+  const repeatNumber = req.body.repeatNumber  
 
   let minutes = date.getMinutes()
   let hours = date.getHours()
   let day = date.getDate()
   let month =  date.getMonth() + 1
+  let dayOfTheWeek = '*'
 
-  let cronPattern = [minutes, hours, day, month].join(' ')
-try{
-  new CronJob(cronPattern, function() {
-    let horseman = new Horseman({
-      ignoreSSLErrors: true
-    })
-    taskRunner(tasks, photoId, horseman)
-    .then(() => {
-       console.log('tasks complete')
-    })
-  }, null, true)
-} catch (ex) {
-  console.log("cron pattern not valid")
-}
+  switch (repeatValue) {
+    case 'day':
+      month = '*'
+      day = '*'
+      break
+    case 'week':
+      day = '*'
+      month = '*'
+      dayOfTheWeek = '0'
+      break
+    case 'month':
+      month = '*'
+      break
+  }
+  
+  if (repeatValue === 'week') {
+    day = '*'
+    if (repeatNumber > 1)
+      day += '/' + repeatNumber
+  }
+  const croncmd = '"node /home/jake/automation-app/taskRunner.js'
+    + ' --taskId=' + taskId + '"';
+  
+  const cronjob = [minutes, hours, day, month, dayOfTheWeek, croncmd].join(' ')
+  
+  const command = '( crontab -l | grep -v -F '+croncmd+'; echo "'+cronjob+'" ) | crontab -'
+
+  const taskString = JSON.stringify(tasks)
+  fs.writeFile('/home/jake/automation-app/taskData/task'+taskId+'.json', taskString, 'utf8', () => { 
+    spawn('sh', ['-c', command], {stdio: 'inherit'})
+  })
 })
 
 const port = 8080;
